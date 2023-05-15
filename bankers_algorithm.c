@@ -31,6 +31,15 @@ int main(int argc, char *argv[]) {
     pthread_t customers[NUMBER_OF_CUSTOMERS];
     pthread_mutex_init(&mutex, NULL);
 
+    // Initialize the maximum resources each customer can request
+    srand(time(0));
+    for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
+        for (int j = 0; j < NUMBER_OF_RESOURCES; j++) {
+            maximum[i][j] = rand() % available[j] + 1;
+            need[i][j] = maximum[i][j];
+        }
+    }
+
     for (int i = 0; i < NUMBER_OF_CUSTOMERS; i++) {
         pthread_create(&customers[i], NULL, &customer_routine, (void*)(long)i);
     }
@@ -56,13 +65,19 @@ void* customer_routine(void* customer_num) {
 
         pthread_mutex_lock(&mutex);
 
+        printf("Customer %d requests resources: ", customer);
+        for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
+            printf("%d ", request[i]);
+        }
+        printf("\n");
+
         int request_status = request_resources(customer, request);
-        if (request_status != last_request_status) { // Only print the status if it has changed
+        if (request_status != last_request_status) {
             if (request_status == 0) {
-                printf("Customer %d request is granted\n", customer);
+                printf("Customer %d's request is granted\n", customer);
                 release_resources(customer, request);
             } else {
-                printf("Customer %d request is denied\n", customer);
+                printf("Customer %d's request is denied due to potential unsafe state\n", customer);
             }
 
             last_request_status = request_status;
@@ -70,7 +85,7 @@ void* customer_routine(void* customer_num) {
 
         pthread_mutex_unlock(&mutex);
 
-        sleep(rand() % 5 + 1); // Sleep for a random number of seconds between 1 and 5
+        sleep(rand() % 5 + 1);
     }
 
     return NULL;
@@ -91,7 +106,7 @@ int request_resources(int customer_num, int request[]) {
     for (int i = 0; i < NUMBER_OF_RESOURCES; i++) {
         available[i] -= request[i];
         allocation[customer_num][i] += request[i];
-        need[customer_num][i] -= request[i];
+        need[customer_num][i] -=        request[i];
     }
 
     // Check if the state is safe
@@ -146,3 +161,4 @@ void release_resources(int customer_num, int release[]) {
         need[customer_num][i] += release[i];
     }
 }
+

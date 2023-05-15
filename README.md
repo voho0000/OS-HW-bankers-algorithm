@@ -55,3 +55,6 @@ Replace `<resource_1>`, `<resource_2>`, `<resource_3>`, and `<resource_4>` with 
 The program will start and the customers will start requesting and releasing resources. When a customer makes a request, the Banker's algorithm will determine if the request can be granted safely. If it can, the request is granted and the state of the system is updated. If it can't, the request is denied.
 
 The program will print the status of each request (granted or denied) whenever a request is made. If a request's status is the same as the previous request's status, the status will not be printed.
+
+## Execution Snapshop
+![Execution Snapshop](./execution_snap.png)
