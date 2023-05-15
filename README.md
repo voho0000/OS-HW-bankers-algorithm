@@ -1,7 +1,3 @@
-Sure, I can add that. Here's the updated README.md:
-
----
-
 # Banker's Algorithm Multithreaded Program
 
 This program implements a multithreaded version of the Banker's Algorithm which is used to avoid deadlock in a computing system. It simulates a system with a number of resources and customers (threads) that continually request and release resources.
